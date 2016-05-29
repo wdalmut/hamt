@@ -1,3 +1,5 @@
 *.o
 src/hamt
 hamt
+hamt_test
+tests/hamt_test
