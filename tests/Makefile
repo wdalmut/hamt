@@ -1,6 +1,27 @@
+IDIR =../src
+CC=gcc
+CFLAGS=-I$(IDIR)
 
-hamt_tests:
-	gcc -Wall -g3 -o hamt_tests -I. -I../src ../src/hamt.c main.c
+ODIR=../src
+LDIR =../src
+
+LIBS=-lm
+
+_DEPS = minunit.h
+DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
+
+_OBJ = hamt.o ../tests/main.o
+OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
+
+
+$(ODIR)/%.o: %.c $(DEPS)
+	$(CC) -c -o $@ $< $(CFLAGS)
+
+hamt_tests: $(OBJ)
+	gcc -o $@ $^ $(CFLAGS) $(LIBS)
+
+.PHONY: clean
 
 clean:
-	rm -f *.o
+	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~ 
+

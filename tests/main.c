@@ -43,10 +43,37 @@ static char *test_get_an_existing_element() {
     return 0;
 }
 
+static char *test_delete_an_existing_element() {
+    leaf *root;
+
+    root = (leaf *)malloc(sizeof(leaf));
+
+    hamt_set(root, "key", "walter");
+
+    hamt_del(root, "key");
+
+    mu_assert("The current value should be null but it is not...", NULL == hamt_get(root, "key"));
+    return 0;
+}
+
+static char *test_delete_a_missing_element() {
+    leaf *root;
+
+    root = (leaf *)malloc(sizeof(leaf));
+
+    hamt_del(root, "key");
+
+    mu_assert("The current value should be null but it is not...", NULL == hamt_get(root, "key"));
+
+    return 0;
+}
+
 static char *all_tests() {
     mu_run_test(test_add_elements);
     mu_run_test(test_get_null_elements);
     mu_run_test(test_get_an_existing_element);
+    mu_run_test(test_delete_an_existing_element);
+    mu_run_test(test_delete_a_missing_element);
     return 0;
 }
 

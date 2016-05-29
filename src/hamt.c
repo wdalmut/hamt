@@ -5,6 +5,8 @@
 
 #include "hamt.h"
 
+static leaf *hamt_ref(leaf *, const char *);
+
 void hamt_set(leaf *root, const char *key, const char *content) {
     const char *currentKey = key;
 
@@ -31,6 +33,29 @@ void hamt_set(leaf *root, const char *key, const char *content) {
 }
 
 char *hamt_get(leaf *root, const char *key) {
+    leaf * current = hamt_ref(root, key);
+
+    if (current) {
+        return current->content;
+    } else {
+        return NULL;
+    }
+}
+
+void hamt_del(leaf *root, const char *key) {
+    leaf *current = hamt_ref(root, key);
+
+    if (current) {
+        free(current->content);
+        current->content = NULL;
+    }
+}
+
+/**
+ * Private method to look for objects
+ */
+static leaf *hamt_ref(leaf *root, const char *key)
+{
     const char *currentKey = key;
 
     if (!root->leafs) {
@@ -46,9 +71,8 @@ char *hamt_get(leaf *root, const char *key) {
 
     currentKey +=1;
     if (!(*currentKey)) {
-        return current->content;
+        return current;
     }
 
-
-    return hamt_get(current, currentKey);
+    return hamt_ref(current, currentKey);
 }
