@@ -14,12 +14,12 @@ void hamt_set(leaf *root, const char *key, const char *content) {
         root->leafs = (leaf **)malloc(256 * sizeof(leaf *));
     }
 
-    uint8_t part = key[(int)(*key)];
-    leaf *current = root->leafs[part];
+    /*uint8_t part = key[(int)(*key)];*/
+    leaf *current = root->leafs[(int)(*key)];
 
     if (!current) {
         current = (leaf *)malloc(sizeof(leaf));
-        root->leafs[part] = current;
+        root->leafs[(int)(*key)] = current;
     }
 
     currentKey += 1;
@@ -51,6 +51,40 @@ void hamt_del(leaf *root, const char *key) {
     }
 }
 
+result *hamt_list(leaf *root, const char *key, result *head)
+{
+    leaf *current = hamt_ref(root, key);
+
+    if (current != NULL && current->content != NULL) {
+        result *k = (result *)malloc(sizeof(result));
+
+        if (head == NULL) {
+            head = k;
+        } else {
+            head->next = k;
+        }
+
+        char * new_key = (char *)malloc(sizeof(char)*(strlen(key)+1));
+        k->key = strcpy(new_key, key);
+    }
+
+    if (current != NULL) {
+        int i;
+        for (i=1; i<128; i++) {
+            char *extended_key = (char *)malloc(sizeof(char)*(strlen(key)+2));
+            extended_key = strcpy(extended_key, key);
+            extended_key[strlen(key)] = i;
+            extended_key[strlen(key)+1] = '\0';
+
+            hamt_list(root, extended_key, (head->next) ? head->next : head);
+
+            free(extended_key);
+        }
+    }
+
+    return head;
+}
+
 /**
  * Private method to look for objects
  */
@@ -62,8 +96,8 @@ static leaf *hamt_ref(leaf *root, const char *key)
         return NULL;
     }
 
-    uint8_t part = key[(int)(*key)];
-    leaf *current = root->leafs[part];
+    /*uint8_t part = key[(int)(*key)];*/
+    leaf *current = root->leafs[(int)(*key)];
 
     if (!current) {
         return NULL;

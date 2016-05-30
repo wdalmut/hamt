@@ -6,6 +6,12 @@ struct elem_t {
     char *content;
 };
 
+struct result_t {
+    struct result_t *next;
+    char *key;
+};
+
+typedef struct result_t result;
 typedef struct elem_t leaf;
 
 /**
@@ -35,5 +41,12 @@ char *hamt_get(leaf *, const char *);
  *     hamt_del(leafs, "hello");
  */
 void hamt_del(leaf *, const char *);
+
+/**
+ * List all existing keys starting with a prefix
+ *
+ *     result *head = hamt_list(leafs, "key", NULL);
+ */
+result *hamt_list(leaf *, const char *, result *);
 
 #endif

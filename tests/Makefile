@@ -1,6 +1,6 @@
 IDIR =../src
 CC=gcc
-CFLAGS=-I$(IDIR)
+CFLAGS=-I$(IDIR) -Wall -g3
 
 ODIR=../src
 LDIR =../src
@@ -15,10 +15,10 @@ OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 
 $(ODIR)/%.o: %.c $(DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS)
+	$(CC) -Wall -g3 -c -o $@ $< $(CFLAGS)
 
 hamt_tests: $(OBJ)
-	gcc -o $@ $^ $(CFLAGS) $(LIBS)
+	gcc -Wall -g3 -o $@ $^ $(CFLAGS) $(LIBS)
 
 .PHONY: clean
 
