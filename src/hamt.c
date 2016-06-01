@@ -14,8 +14,7 @@ void hamt_set(leaf *root, const char *key, const char *content) {
         root->leafs = (leaf **)malloc(256 * sizeof(leaf *));
     }
 
-    /*uint8_t part = key[(int)(*key)];*/
-    leaf *current = root->leafs[(int)(*key)];
+    leaf *current = root->leafs[(unsigned char)(*key)];
 
     if (!current) {
         current = (leaf *)malloc(sizeof(leaf));
@@ -70,7 +69,7 @@ result *hamt_list(leaf *root, const char *key, result *head)
 
     if (current != NULL) {
         int i;
-        for (i=1; i<128; i++) {
+        for (i=1; i<255; i++) {
             char *extended_key = (char *)malloc(sizeof(char)*(strlen(key)+2));
             extended_key = strcpy(extended_key, key);
             extended_key[strlen(key)] = i;
@@ -96,8 +95,7 @@ static leaf *hamt_ref(leaf *root, const char *key)
         return NULL;
     }
 
-    /*uint8_t part = key[(int)(*key)];*/
-    leaf *current = root->leafs[(int)(*key)];
+    leaf *current = root->leafs[(unsigned char)(*key)];
 
     if (!current) {
         return NULL;
